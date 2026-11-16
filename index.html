@@ -71,7 +71,18 @@ h2{font:700 clamp(30px,4vw,42px)/1.1 var(--serif);color:var(--ink);letter-spacin
 .contact h2{color:#fff}
 .contact p{max-width:52ch;margin:0 auto 28px}
 .contact .btn{background:var(--accent);color:var(--ink)}
-.contact .addr{display:block;margin-top:14px;font-size:15px;color:#9ca3af}
+.contact .addr{display:block;margin-top:18px;font-size:15px;color:#9ca3af}
+.contact .addr a{color:#e5e7eb}
+form.cf{max-width:560px;margin:0 auto;text-align:left;display:grid;gap:14px}
+.cf .row{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media (max-width:560px){.cf .row{grid-template-columns:1fr}}
+.cf label{display:grid;gap:6px;font-size:14px;font-weight:500;color:#e5e7eb}
+.cf input,.cf select,.cf textarea{font:16px/1.4 var(--sans);color:var(--ink);background:#fff;border:1px solid #d1d5db;border-radius:10px;padding:12px 14px;width:100%}
+.cf textarea{min-height:130px;resize:vertical}
+.cf button{font:600 16px var(--sans);border:0;cursor:pointer;justify-self:start}
+.cf .hp{position:absolute;left:-9999px}
+.cf .status{font-size:15px;min-height:1.4em;margin:0}
+.cf .status.ok{color:#86efac} .cf .status.err{color:#fca5a5}
 footer{padding:0 0 40px;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
@@ -88,7 +99,7 @@ footer{padding:0 0 40px;font-size:14px;color:var(--muted);display:flex;justify-c
     <div class="eyebrow">Web application development · San Antonio, Texas</div>
     <h1>Build new. Fix what's broken. <em>Grow what works.</em></h1>
     <p class="lead">I build new web applications and fix existing ones for small businesses and founders. Whether you're starting from scratch or stuck with an app that breaks every time someone touches it, you get senior-level work and a clear plan.</p>
-    <a class="btn" href="mailto:hello@fzstudios.com">Start a conversation</a><a class="btn ghost" href="#work">See recent work</a>
+    <a class="btn" href="#contact">Start a conversation</a><a class="btn ghost" href="#work">See recent work</a>
   </header>
 
   <section id="services">
@@ -142,11 +153,41 @@ footer{padding:0 0 40px;font-size:14px;color:var(--muted);display:flex;justify-c
   <section id="contact" class="contact">
     <h2>Have an app to build or fix?</h2>
     <p>Tell me a little about what you have in mind, or where your current app is stuck. I take on a limited number of projects so each one gets real attention.</p>
-    <a class="btn" href="mailto:hello@fzstudios.com">Email Fz Studios</a>
-    <span class="addr">hello@fzstudios.com</span>
+    <form class="cf" id="contactForm" action="https://formspree.io/f/mvkakwkn" method="POST">
+      <div class="row">
+        <label>Name<input name="name" autocomplete="name" required></label>
+        <label>Email<input type="email" name="email" autocomplete="email" required></label>
+      </div>
+      <label>What do you need?
+        <select name="project_type">
+          <option>A new web application</option>
+          <option>Fix or improve an existing app</option>
+          <option>Not sure yet</option>
+        </select>
+      </label>
+      <label>Tell me about it<textarea name="message" required></textarea></label>
+      <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <input type="hidden" name="_subject" value="New inquiry from fzstudios.com">
+      <button class="btn" type="submit">Send message</button>
+      <p class="status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+    <span class="addr">Prefer email? Write to <a href="mailto:hello@fzstudios.com">hello@fzstudios.com</a></span>
   </section>
 
   <footer><span>© 2026 Fz Studios</span><span>San Antonio, Texas</span></footer>
 </div>
+<script>
+(function(){
+  var f=document.getElementById("contactForm"), st=document.getElementById("formStatus");
+  f.addEventListener("submit",function(e){
+    e.preventDefault();
+    var b=f.querySelector("button"); b.disabled=true; st.className="status"; st.textContent="Sending...";
+    fetch(f.action,{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}})
+      .then(function(r){ if(!r.ok) throw 0; f.reset(); st.className="status ok"; st.textContent="Thanks, your message was sent. I'll get back to you within two business days."; })
+      .catch(function(){ st.className="status err"; st.textContent="Something went wrong. Please email hello@fzstudios.com instead."; })
+      .finally(function(){ b.disabled=false; });
+  });
+})();
+</script>
 </body>
 </html>
